@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Treinamento Ammo - Mobile</title>
+    <style>
+        /* Estilos Modernos Mobile-First */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 10px; /* Menos margem no celular */
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Para não cortar o topo no celular */
+        }
+        .container { 
+            width: 100%;
+            max-width: 500px; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 20px 15px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            box-sizing: border-box;
+        }
+        h2 { 
+            text-align: center; color: #112a36; margin-top: 0; 
+            font-weight: 800; text-transform: uppercase; 
+            letter-spacing: 1px; font-size: 20px; 
+        }
+        
+        /* Ajuste para caixas ficarem verticais no celular */
+        .form-group { 
+            display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; 
+        }
+        
+        label { 
+            font-size: 13px; font-weight: bold; color: #555; 
+            display: block; margin-bottom: 4px; text-transform: uppercase; 
+        }
+        select { 
+            width: 100%; padding: 14px; font-size: 16px; 
+            border-radius: 8px; border: 1px solid #ccc; 
+            background: #fff; outline: none; box-sizing: border-box;
+            -webkit-appearance: none; /* Remove seta padrão no iOS */
+        }
+        select:focus { border-color: #203a43; }
+        
+        /* Chat com altura dinâmica baseada na tela do celular */
+        #chat { 
+            border: 1px solid #e0e0e0; height: 40vh; /* 40% da altura da tela */
+            overflow-y: auto; padding: 15px; margin-bottom: 20px; 
+            border-radius: 8px; background: #f8f9fa; display: flex; 
+            flex-direction: column; gap: 10px; 
+        }
+        
+        .mensagem { 
+            padding: 12px 14px; border-radius: 12px; max-width: 85%; 
+            line-height: 1.4; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+        .vendedor { background-color: #e3f2fd; align-self: flex-end; border-bottom-right-radius: 0; color: #0d47a1; }
+        .cliente { background-color: #fff; align-self: flex-start; border-bottom-left-radius: 0; color: #212121; border: 1px solid #eeeeee; }
+        
+        /* Botões maiores e empilhados para dedo */
+        .botoes { display: flex; flex-direction: column; gap: 12px; }
+        button { 
+            width: 100%; padding: 18px; font-size: 16px; font-weight: bold; 
+            border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; 
+            display: flex; align-items: center; justify-content: center; gap: 8px; color: white; 
+        }
+        #btnFalar { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); }
+        #btnFalar:active { transform: scale(0.98); }
+        #btnFalar:disabled { background: #9e9e9e; box-shadow: none; }
+        
+        #btnLimpar { background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%); padding: 14px; font-size: 14px; box-shadow: 0 4px 15px rgba(239, 71, 58, 0.4); }
+        #btnLimpar:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Simulador de Vendas</h2>
+    
+    <div class="form-group">
+        <div>
+            <label for="lojaAtual">Loja</label>
+            <select id="lojaAtual">
+                <option value="Palotina">Palotina</option>
+                <option value="Toledo">Toledo</option>
+                <option value="Marechal Cândido Rondon">M. Cândido Rondon</option>
+                <option value="Umuarama">Umuarama</option>
+                <option value="Altônia">Altônia</option>
+                <option value="Douradina">Douradina</option>
+                <option value="Outra">Outra...</option>
+            </select>
+        </div>
+        <div>
+            <label for="nomeConsultor">Consultor(a)</label>
+            <select id="nomeConsultor">
+                <option value="Graciele">Graciele</option>
+                <option value="Patrícia">Patrícia</option>
+                <option value="Adriana">Adriana</option>
+                <option value="Bianca">Bianca</option>
+                <option value="Caroline">Caroline</option>
+                <option value="Adriel">Adriel</option>
+                <option value="Thayná">Thayná</option>
+                <option value="Cláudio">Cláudio</option>
+                <option value="Outro">Outro...</option>
+            </select>
+        </div>
+        <div>
+            <label for="perfilCliente">Perfil do Cliente IA</label>
+            <select id="perfilCliente">
+                <option value="estressado">😡 Estressado (Pressa, grosso)</option>
+                <option value="pechincheiro">💰 Pechincheiro (Só preço)</option>
+                <option value="detalhista">🔬 Detalhista (Garantias)</option>
+                <option value="vaidoso">✨ Vaidoso (Status, Grife)</option>
+                <option value="indeciso">🤷 Indeciso (Inseguro)</option>
+                <option value="especialista">🤓 Especialista (Sabe tudo)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="chat">
+        <div class="mensagem cliente"><strong>Sistema:</strong> Escolha a loja, seu nome e o perfil do cliente acima. Depois, toque no botão verde para falar.</div>
+    </div>
+    
+    <div class="botoes">
+        <button id="btnFalar">🎙️ Tocar para Falar</button>
+        <button id="btnLimpar">🔄 Limpar e Reiniciar</button>
+    </div>
+</div>
+
+<script>
+    const btnFalar = document.getElementById('btnFalar');
+    const btnLimpar = document.getElementById('btnLimpar');
+    const chat = document.getElementById('chat');
+    
+    // ========================================================
+    // COLOQUE AQUI A SUA URL DO GOOGLE APPS SCRIPT
+    // ========================================================
+    const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycby9qfLsZSxtxgCJPelI2UrB6DmQT-81lGbjekZDQ1ONLOpmWxJHmcMUbjlRQiBJRVh6Eg/exec';
+
+    let historicoConversa = [];
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.interimResults = false;
+
+    function adicionarMensagem(autor, texto, classe) {
+        chat.innerHTML += `<div class="mensagem ${classe}"><strong>${autor}:</strong> ${texto}</div>`;
+        chat.scrollTop = chat.scrollHeight; 
+    }
+
+    btnLimpar.addEventListener('click', () => {
+        historicoConversa = [];
+        chat.innerHTML = '<div class="mensagem cliente"><strong>Sistema:</strong> Treinamento reiniciado. Pode começar o próximo.</div>';
+    });
+
+    btnFalar.addEventListener('click', () => {
+        recognition.start();
+        btnFalar.textContent = "🔴 Ouvindo...";
+        btnFalar.style.background = "linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)"; // Fica laranja gravando
+        btnFalar.disabled = true;
+    });
+
+    recognition.onresult = async (event) => {
+        const falaVendedor = event.results[0][0].transcript;
+        adicionarMensagem('Você', falaVendedor, 'vendedor');
+        btnFalar.textContent = "⏳ Processando...";
+        btnFalar.style.background = "#9e9e9e";
+
+        historicoConversa.push({autor: "Consultor", texto: falaVendedor});
+        
+        const perfilEscolhido = document.getElementById('perfilCliente').value;
+        const consultorAtual = document.getElementById('nomeConsultor').value;
+        const lojaAtual = document.getElementById('lojaAtual').value;
+
+        try {
+            const response = await fetch(URL_WEB_APP, {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    historico: historicoConversa, 
+                    perfil: perfilEscolhido,
+                    consultor: consultorAtual,
+                    loja: lojaAtual
+                })
+            });
+            
+            const data = await response.json();
+            const respostaIA = data.resposta;
+
+            historicoConversa.push({autor: "Cliente (IA)", texto: respostaIA});
+            adicionarMensagem('Cliente (IA)', respostaIA, 'cliente');
+            
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(respostaIA);
+            utterance.lang = 'pt-BR';
+            
+            if (perfilEscolhido === 'estressado') utterance.rate = 1.4;
+            else if (perfilEscolhido === 'detalhista') utterance.rate = 0.9;
+            else if (perfilEscolhido === 'indeciso') utterance.rate = 0.85;
+            else if (perfilEscolhido === 'especialista') utterance.rate = 1.15;
+            else utterance.rate = 1.1;
+            
+            utterance.onend = () => {
+                btnFalar.textContent = "🎙️ Tocar para Falar";
+                btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+                btnFalar.disabled = false;
+            };
+            
+            synth.speak(utterance);
+
+        } catch (error) {
+            adicionarMensagem('Sistema', 'Erro de conexão.', 'cliente');
+            btnFalar.textContent = "🎙️ Tentar Novamente";
+            btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+            btnFalar.disabled = false;
+        }
+    };
+
+    recognition.onerror = () => {
+        btnFalar.textContent = "🎙️ Tocar para Falar";
+        btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+        btnFalar.disabled = false;
+    };
+</script>
+
+</body>
+</html>
