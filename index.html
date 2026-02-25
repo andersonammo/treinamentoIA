@@ -5,76 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Treinamento Ammo - Mobile</title>
     <style>
-        /* Estilos Modernos Mobile-First */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 10px; /* Menos margem no celular */
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Para não cortar o topo no celular */
-        }
-        .container { 
-            width: 100%;
-            max-width: 500px; 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 20px 15px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            box-sizing: border-box;
-        }
-        h2 { 
-            text-align: center; color: #112a36; margin-top: 0; 
-            font-weight: 800; text-transform: uppercase; 
-            letter-spacing: 1px; font-size: 20px; 
-        }
-        
-        /* Ajuste para caixas ficarem verticais no celular */
-        .form-group { 
-            display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; 
-        }
-        
-        label { 
-            font-size: 13px; font-weight: bold; color: #555; 
-            display: block; margin-bottom: 4px; text-transform: uppercase; 
-        }
-        select { 
-            width: 100%; padding: 14px; font-size: 16px; 
-            border-radius: 8px; border: 1px solid #ccc; 
-            background: #fff; outline: none; box-sizing: border-box;
-            -webkit-appearance: none; /* Remove seta padrão no iOS */
-        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); color: #333; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+        .container { width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.95); padding: 20px 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box; }
+        h2 { text-align: center; color: #112a36; margin-top: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        label { font-size: 13px; font-weight: bold; color: #555; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        select { width: 100%; padding: 14px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; background: #fff; outline: none; box-sizing: border-box; -webkit-appearance: none; }
         select:focus { border-color: #203a43; }
-        
-        /* Chat com altura dinâmica baseada na tela do celular */
-        #chat { 
-            border: 1px solid #e0e0e0; height: 40vh; /* 40% da altura da tela */
-            overflow-y: auto; padding: 15px; margin-bottom: 20px; 
-            border-radius: 8px; background: #f8f9fa; display: flex; 
-            flex-direction: column; gap: 10px; 
-        }
-        
-        .mensagem { 
-            padding: 12px 14px; border-radius: 12px; max-width: 85%; 
-            line-height: 1.4; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        }
+        #chat { border: 1px solid #e0e0e0; height: 40vh; overflow-y: auto; padding: 15px; margin-bottom: 20px; border-radius: 8px; background: #f8f9fa; display: flex; flex-direction: column; gap: 10px; }
+        .mensagem { padding: 12px 14px; border-radius: 12px; max-width: 85%; line-height: 1.4; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .vendedor { background-color: #e3f2fd; align-self: flex-end; border-bottom-right-radius: 0; color: #0d47a1; }
         .cliente { background-color: #fff; align-self: flex-start; border-bottom-left-radius: 0; color: #212121; border: 1px solid #eeeeee; }
-        
-        /* Botões maiores e empilhados para dedo */
         .botoes { display: flex; flex-direction: column; gap: 12px; }
-        button { 
-            width: 100%; padding: 18px; font-size: 16px; font-weight: bold; 
-            border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; 
-            display: flex; align-items: center; justify-content: center; gap: 8px; color: white; 
-        }
+        button { width: 100%; padding: 18px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; }
         #btnFalar { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); }
         #btnFalar:active { transform: scale(0.98); }
         #btnFalar:disabled { background: #9e9e9e; box-shadow: none; }
-        
         #btnLimpar { background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%); padding: 14px; font-size: 14px; box-shadow: 0 4px 15px rgba(239, 71, 58, 0.4); }
         #btnLimpar:active { transform: scale(0.98); }
     </style>
@@ -140,7 +86,7 @@
     const chat = document.getElementById('chat');
     
     // ========================================================
-    // COLOQUE AQUI A SUA URL DO GOOGLE APPS SCRIPT
+    // COLOQUE AQUI A SUA NOVA URL DO GOOGLE APPS SCRIPT
     // ========================================================
     const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycby9qfLsZSxtxgCJPelI2UrB6DmQT-81lGbjekZDQ1ONLOpmWxJHmcMUbjlRQiBJRVh6Eg/exec';
 
@@ -164,7 +110,7 @@
     btnFalar.addEventListener('click', () => {
         recognition.start();
         btnFalar.textContent = "🔴 Ouvindo...";
-        btnFalar.style.background = "linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)"; // Fica laranja gravando
+        btnFalar.style.background = "linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)";
         btnFalar.disabled = true;
     });
 
@@ -198,6 +144,8 @@
             adicionarMensagem('Cliente (IA)', respostaIA, 'cliente');
             
             const synth = window.speechSynthesis;
+            synth.cancel(); // Limpa áudios engasgados no celular
+            
             const utterance = new SpeechSynthesisUtterance(respostaIA);
             utterance.lang = 'pt-BR';
             
@@ -216,8 +164,11 @@
             synth.speak(utterance);
 
         } catch (error) {
-            adicionarMensagem('Sistema', 'Erro de conexão.', 'cliente');
-            btnFalar.textContent = "🎙️ Tentar Novamente";
+            adicionarMensagem('Sistema', 'Falha na conexão. A internet oscilou ou o servidor demorou.', 'cliente');
+            console.error("Erro detalhado:", error);
+        } finally {
+            // Garante que o botão destrave mesmo se a internet cair
+            btnFalar.textContent = "🎙️ Tocar para Falar";
             btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
             btnFalar.disabled = false;
         }
