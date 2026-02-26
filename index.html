@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Treinamento Ammo - Mobile</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
-    
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23203a43%22/><text y=%22.85em%22 x=%22.1em%22 font-size=%2280%22>🎯</text></svg>">
-    
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); color: #333; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); color: #333; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
         .container { width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.95); padding: 20px 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box; }
         h2 { text-align: center; color: #112a36; margin-top: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 20px; }
         .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
@@ -80,7 +76,7 @@
     </div>
 
     <div id="chat">
-        <div class="mensagem cliente"><strong>Sistema:</strong> Escolha a loja, seu nome e o perfil do cliente acima. Depois, toque no botão verde para falar.</div>
+        <div class="mensagem cliente"><strong>Sistema:</strong> Escolha a loja, seu nome e o perfil. Depois, toque no botão verde para falar.</div>
     </div>
     
     <div class="botoes">
@@ -95,7 +91,7 @@
     const chat = document.getElementById('chat');
     
     // ========================================================
-    // COLOQUE AQUI A SUA NOVA URL DO GOOGLE APPS SCRIPT
+    // COLOQUE AQUI A SUA URL DO GOOGLE APPS SCRIPT
     // ========================================================
     const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycby9qfLsZSxtxgCJPelI2UrB6DmQT-81lGbjekZDQ1ONLOpmWxJHmcMUbjlRQiBJRVh6Eg/exec';
 
@@ -114,9 +110,13 @@
     btnLimpar.addEventListener('click', () => {
         historicoConversa = [];
         chat.innerHTML = '<div class="mensagem cliente"><strong>Sistema:</strong> Treinamento reiniciado. Pode começar o próximo.</div>';
+        window.speechSynthesis.cancel(); // Para qualquer áudio que estiver tocando
     });
 
     btnFalar.addEventListener('click', () => {
+        // Macete para o celular permitir áudio depois:
+        window.speechSynthesis.cancel(); 
+        
         recognition.start();
         btnFalar.textContent = "🔴 Ouvindo...";
         btnFalar.style.background = "linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)";
@@ -152,11 +152,13 @@
             historicoConversa.push({autor: "Cliente (IA)", texto: respostaIA});
             adicionarMensagem('Cliente (IA)', respostaIA, 'cliente');
             
+            // === DESTRAVANDO O SOM AQUI ===
             const synth = window.speechSynthesis;
-            synth.cancel(); // Limpa áudios engasgados no celular
+            synth.cancel(); // Limpa a fila engasgada do navegador
             
             const utterance = new SpeechSynthesisUtterance(respostaIA);
             utterance.lang = 'pt-BR';
+            utterance.volume = 3; // Força o volume no máximo
             
             if (perfilEscolhido === 'estressado') utterance.rate = 1.4;
             else if (perfilEscolhido === 'detalhista') utterance.rate = 0.9;
@@ -170,14 +172,18 @@
                 btnFalar.disabled = false;
             };
             
+            // Adicionado caso dê erro no áudio, para liberar o botão
+            utterance.onerror = () => {
+                btnFalar.textContent = "🎙️ Tocar para Falar";
+                btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+                btnFalar.disabled = false;
+            };
+            
             synth.speak(utterance);
 
         } catch (error) {
-            adicionarMensagem('Sistema', 'Falha na conexão. A internet oscilou ou o servidor demorou.', 'cliente');
-            console.error("Erro detalhado:", error);
-        } finally {
-            // Garante que o botão destrave mesmo se a internet cair
-            btnFalar.textContent = "🎙️ Tocar para Falar";
+            adicionarMensagem('Sistema', 'Erro de conexão.', 'cliente');
+            btnFalar.textContent = "🎙️ Tentar Novamente";
             btnFalar.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
             btnFalar.disabled = false;
         }
@@ -192,5 +198,3 @@
 
 </body>
 </html>
-
-
