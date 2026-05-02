@@ -10,7 +10,7 @@
         :root { 
             --ammo-navy: #0A2342; 
             --ammo-gold: #FFC107; 
-            --ammo-light: #e0f2fe; /* Azul claro moderno e profissional */
+            --ammo-light: #e0f2fe; 
         }
         body { 
             background-color: var(--ammo-light); 
@@ -503,6 +503,39 @@
         }).catch(err => { 
             alert("Erro de rede. A URL do Google Apps Script pode estar incorreta."); 
         });
+
+        // ========================================================
+        // INTEGRAÇÃO COM O SIMULADOR DE LENTES (NOVO)
+        // ========================================================
+        const itemSimulador = localStorage.getItem('itensoroticas');
+        if (itemSimulador) {
+            try {
+                // Lê as informações enviadas pelo simulador
+                const dadosLente = JSON.parse(itemSimulador);
+                
+                // Formata o nome bonito para aparecer no carrinho da OS
+                const nomeCompletoLente = `Lente ${dadosLente.modelo} | ${dadosLente.material} | ${dadosLente.tratamento}`;
+                const precoLente = parseFloat(dadosLente.preco);
+
+                // Adiciona diretamente na lista do carrinho de compras
+                carrinho.push({
+                    codigo: "LENTE-SIMULADOR",
+                    nome: nomeCompletoLente,
+                    valor: precoLente,
+                    qtd: 1
+                });
+
+                // Atualiza o desenho do carrinho na tela
+                atualizarCarrinhoVisual();
+
+                // Apaga a memória para não duplicar se a página for recarregada
+                localStorage.removeItem('itensoroticas');
+
+                console.log("Lente importada do simulador com sucesso!");
+            } catch (e) {
+                console.error("Erro ao importar a lente do simulador:", e);
+            }
+        }
     };
 
     function renderizarListaProdutos(lista) {
