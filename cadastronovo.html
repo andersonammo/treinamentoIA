@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CADASTRO CLIENTES - PDV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --ammo-navy: #0A2342; 
+            --ammo-gold: #FFC107; 
+            --ammo-light: #e0f2fe; /* Azul claro moderno e profissional */
+        }
+        body { 
+            background-color: var(--ammo-light); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        .card { 
+            border: none; 
+            border-radius: 18px; 
+            box-shadow: 0 12px 30px rgba(10, 35, 66, 0.12); 
+            margin-bottom: 30px; 
+            overflow: hidden;
+        }
+        .card-header { 
+            background: var(--ammo-navy); 
+            color: var(--ammo-gold); 
+            border-radius: 18px 18px 0 0 !important; 
+            font-weight: bold; 
+            letter-spacing: 1px; 
+        }
+        .radio-box { 
+            background: #fff; 
+            border: 1px solid #dee2e6; 
+            border-radius: 8px; 
+            padding: 12px; 
+            display: flex; 
+            justify-content: space-around; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .btn-ammo { 
+            background: var(--ammo-gold); 
+            border: none; 
+            color: var(--ammo-navy); 
+            font-weight: bold; 
+            padding: 12px; 
+            border-radius: 8px;
+            transition: 0.3s; 
+        }
+        .btn-ammo:hover { 
+            background: #e0a800; 
+            color: var(--ammo-navy); 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+        label { 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            color: var(--ammo-navy); 
+            margin-bottom: 6px; 
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+        }
+        .form-control:focus, .form-select:focus { 
+            border-color: var(--ammo-gold); 
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25); 
+        }
+        .bg-receita-box { 
+            background-color: rgba(255, 255, 255, 0.7); 
+            border: 1px solid rgba(10, 35, 66, 0.1); 
+            border-radius: 12px; 
+        }
+        .header-receita { 
+            background-color: var(--ammo-navy); 
+            color: white; 
+            padding: 6px; 
+            border-radius: 6px; 
+            font-size: 0.9rem; 
+            font-weight: bold; 
+        }
+        .bg-perto { background-color: #e9ecef; }
+        .loading-cpf { 
+            background-image: url('https://i.gifer.com/ZZ5H.gif'); 
+            background-size: 20px; 
+            background-repeat: no-repeat; 
+            background-position: 98% center; 
+        }
+        .produto-item { 
+            cursor: pointer; 
+            padding: 12px; 
+            border-bottom: 1px solid #dee2e6; 
+            transition: 0.2s; 
+            background: #fff; 
+        }
+        .produto-item:hover { 
+            background-color: rgba(255, 193, 7, 0.15); 
+            border-left: 4px solid var(--ammo-navy); 
+        }
+        .lista-produtos { 
+            max-height: 480px; 
+            overflow-y: auto; 
+            background: white; 
+            border: 1px solid #dee2e6; 
+            border-radius: 8px; 
+        }
+        .carrinho-lista { max-height: 200px; overflow-y: auto; }
+        .total-box { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            background-color: var(--ammo-navy); 
+            color: var(--ammo-gold); 
+            border-radius: 8px; 
+            padding: 12px; 
+            border: 2px solid var(--ammo-gold); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ==========================================
+           LAYOUT DE IMPRESSÃO COMPACTO A4
+           ========================================== */
+        @media print {
+            @page { margin: 5mm; } 
+            body * { visibility: hidden; }
+            #areaImpressao, #areaImpressao * { visibility: visible; }
+            #areaImpressao {
+                position: absolute; left: 0; top: 0; width: 100%;
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10px; color: #000;
+            }
+            .via-impressao { border: 1px solid #000; border-radius: 5px; padding: 8px; margin-bottom: 8px; page-break-inside: avoid; }
+            .print-title { text-align: center; font-weight: 900; font-size: 13px; margin-bottom: 4px; letter-spacing: 1px; border-bottom: 1px solid #000; padding-bottom: 3px; }
+            .print-subtitle { text-align: center; font-size: 11px; font-weight: bold; margin-top: -2px; margin-bottom: 6px; color: #444; }
+            .print-section { margin-bottom: 6px; line-height: 1.2; }
+            .print-section b { color: #222; }
+            .print-row { display: flex; justify-content: space-between; margin-bottom: 3px; border-bottom: 1px dotted #ccc; padding-bottom: 2px; }
+            .print-row:last-child { border-bottom: none; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 4px; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 2px; text-align: center; font-size: 9px; }
+            .print-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+            .termo-entrega { margin-top: 8px; border: 1px solid #000; padding: 6px; border-radius: 5px; background-color: #f9f9f9 !important; -webkit-print-color-adjust: exact; }
+            .termo-titulo { text-align: center; font-weight: 900; font-size: 10px; margin-bottom: 3px; }
+            .termo-desc { text-align: center; font-size: 9px; margin-bottom: 6px; font-style: italic; }
+            .check-item { display: flex; align-items: center; margin-bottom: 4px; font-weight: bold; font-size: 9px; }
+            .check-box { margin-right: 10px; font-weight: normal; }
+            .assinatura-box { margin-top: 20px; display: flex; justify-content: space-around; }
+            .assinatura-linha { border-top: 1px solid #000; width: 40%; text-align: center; padding-top: 3px; font-weight: bold; font-size: 9px; }
+            .destaque-valor { font-size: 12px; font-weight: 900; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4" id="sistemaPDV">
+    <div class="row justify-content-center">
+        <div class="col-md-11"> 
+            <div class="card" id="cardPrincipal">
+                
+                <div class="card-header text-center py-3" id="tituloCard">
+                    <i class="fas fa-user-plus me-2"></i> 1. CADASTRO DE CLIENTE
+                </div>
+                
+                <div class="card-body p-4 bg-white">
+                    <form id="formPDV">
+                        <div class="mb-3">
+                            <label><i class="fas fa-id-badge me-2"></i>VENDEDOR(A)</label>
+                            <select class="form-select border-primary bg-light" id="vendedor" required>
+                                <option value="">Carregando...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-5">
+                                <label>CPF (Busca Automática)</label>
+                                <input type="text" class="form-control border-primary shadow-sm" id="cpf" placeholder="000.000.000-00">
+                            </div>
+                            <div class="col-md-7">
+                                <label>NOME COMPLETO DO CLIENTE</label>
+                                <input type="text" class="form-control bg-light" id="nome" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label>DATA DE NASCIMENTO</label>
+                                <input type="date" class="form-control bg-light" id="nascimento">
+                            </div>
+                        </div>
+
+                        <!-- ENDEREÇO COMPLETO -->
+                        <div class="p-3 mb-3" style="background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                            <h6 class="text-primary mb-3"><i class="fas fa-map-marker-alt me-2"></i>Endereço do Cliente</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label>CEP</label>
+                                    <input type="text" class="form-control" id="cep" placeholder="00000-000">
+                                </div>
+                                <div class="col-md-7">
+                                    <label>RUA (Logradouro)</label>
+                                    <input type="text" class="form-control" id="rua">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>NÚMERO</label>
+                                    <input type="text" class="form-control" id="numero" required>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4">
+                                    <label>BAIRRO</label>
+                                    <input type="text" class="form-control" id="bairro">
+                                </div>
+                                <div class="col-md-4">
+                                    <label>COMPLEMENTO</label>
+                                    <input type="text" class="form-control" id="complemento" placeholder="Apto, Bloco, etc.">
+                                </div>
+                                <div class="col-md-4">
+                                    <label>CIDADE / UF</label>
+                                    <input type="text" class="form-control" id="cidade_uf" placeholder="Cidade - UF">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>SEXO</label>
+                            <div class="radio-box bg-light">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sexo" id="m" value="M" checked>
+                                    <label class="form-check-label" for="m">Masculino</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sexo" id="f" value="F">
+                                    <label class="form-check-label" for="f">Feminino</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sexo" id="o" value="O">
+                                    <label class="form-check-label" for="o">Outros</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>E-MAIL</label>
+                            <input type="email" class="form-control bg-light" id="email" placeholder="cliente@email.com">
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label>TELEFONE 01 (Celular)</label>
+                                <input type="text" class="form-control border-primary shadow-sm" id="tel1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label>TELEFONE 02</label>
+                                <input type="text" class="form-control bg-light" id="tel2">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label>OBSERVAÇÕES GERAIS</label>
+                            <textarea class="form-control bg-light" id="obs" rows="2"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-ammo w-100" id="btnSalvarCliente">SALVAR DADOS E IR PARA RECEITA <i class="fas fa-arrow-right ms-2"></i></button>
+                    </form>
+
+                    <div id="moduloReceita" style="display: none;">
+                        <div class="alert alert-info py-2 mb-4 text-center border-info"><strong>Cliente: </strong><span class="nomeClienteDisplay"></span></div>
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label>NOME DO MÉDICO / CLÍNICA</label>
+                                <input type="text" class="form-control" id="medico" placeholder="Dr. / Dra.">
+                            </div>
+                            <div class="col-md-4">
+                                <label>DATA DA RECEITA</label>
+                                <input type="date" class="form-control" id="dataReceita">
+                            </div>
+                        </div>
+                        <div class="bg-receita-box p-3 mb-3">
+                            <div class="text-center header-receita mb-3">VISÃO PARA LONGE</div>
+                            <div class="row align-items-center mb-2">
+                                <div class="col-2 text-center fw-bold text-primary">OD</div>
+                                <div class="col-3"><input type="text" inputmode="decimal" class="form-control form-control-sm text-center" id="lOdEsf" placeholder="Esférico" onchange="travarDioptria(this, false)"></div>
+                                <div class="col-3"><input type="text" inputmode="decimal" class="form-control form-control-sm text-center" id="lOdCil" placeholder="Cilíndrico" onchange="travarDioptria(this, true)"></div>
+                                <div class="col-4"><input type="number" class="form-control form-control-sm text-center" id="lOdEixo" placeholder="Eixo"></div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-2 text-center fw-bold text-primary">OE</div>
+                                <div class="col-3"><input type="text" inputmode="decimal" class="form-control form-control-sm text-center" id="lOeEsf" placeholder="Esférico" onchange="travarDioptria(this, false)"></div>
+                                <div class="col-3"><input type="text" inputmode="decimal" class="form-control form-control-sm text-center" id="lOeCil" placeholder="Cilíndrico" onchange="travarDioptria(this, true)"></div>
+                                <div class="col-4"><input type="number" class="form-control form-control-sm text-center" id="lOeEixo" placeholder="Eixo"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-3">
+                            <div class="col-md-6 text-center">
+                                <label class="fw-bold fs-6">ADIÇÃO (+)</label>
+                                <input type="text" inputmode="decimal" class="form-control form-control-lg text-center border-warning shadow-sm" id="adicao" placeholder="0.00" onchange="travarDioptria(this, false, true)">
+                            </div>
+                        </div>
+                        <div class="bg-receita-box p-3 mb-3">
+                            <div class="text-center header-receita mb-3 bg-secondary">VISÃO PARA PERTO (Automático)</div>
+                            <div class="row align-items-center mb-2">
+                                <div class="col-2 text-center fw-bold text-primary">OD</div>
+                                <div class="col-3"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOdEsf" placeholder="Esférico" readonly></div>
+                                <div class="col-3"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOdCil" placeholder="Cilíndrico" readonly></div>
+                                <div class="col-4"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOdEixo" placeholder="Eixo" readonly></div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-2 text-center fw-bold text-primary">OE</div>
+                                <div class="col-3"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOeEsf" placeholder="Esférico" readonly></div>
+                                <div class="col-3"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOeCil" placeholder="Cilíndrico" readonly></div>
+                                <div class="col-4"><input type="text" class="form-control form-control-sm text-center bg-perto" id="pOeEixo" placeholder="Eixo" readonly></div>
+                            </div>
+                        </div>
+                        <div class="bg-receita-box p-3 mb-4 border border-info">
+                            <div class="text-center header-receita mb-3" style="background-color: #17a2b8;">MEDIDAS (DNP E ALTURA)</div>
+                            <div class="row text-center mb-2">
+                                <div class="col-2"></div>
+                                <div class="col-5 fw-bold text-primary">DNP (mm)</div>
+                                <div class="col-5 fw-bold text-primary">ALTURA (mm)</div>
+                            </div>
+                            <div class="row align-items-center mb-2">
+                                <div class="col-2 text-center fw-bold text-primary">OD</div>
+                                <div class="col-5"><input type="number" step="0.1" class="form-control form-control-sm text-center" id="dnpOd" placeholder="Ex: 32"></div>
+                                <div class="col-5"><input type="number" step="0.1" class="form-control form-control-sm text-center" id="altOd" placeholder="Ex: 22"></div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-2 text-center fw-bold text-primary">OE</div>
+                                <div class="col-5"><input type="number" step="0.1" class="form-control form-control-sm text-center" id="dnpOe" placeholder="Ex: 33"></div>
+                                <div class="col-5"><input type="number" step="0.1" class="form-control form-control-sm text-center" id="altOe" placeholder="Ex: 22"></div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-ammo w-100" id="btnSalvarReceita" onclick="enviarReceita()">SALVAR RECEITA E IR PARA ORÇAMENTO <i class="fas fa-arrow-right ms-2"></i></button>
+                    </div>
+
+                    <div id="moduloVendas" style="display: none;">
+                        <div class="alert alert-info py-2 mb-4 text-center border-info"><strong>Cliente: </strong><span class="nomeClienteDisplay"></span></div>
+
+                        <div class="row g-4">
+                            <div class="col-md-7">
+                                <div class="bg-receita-box p-3 h-100 shadow-sm">
+                                    <div class="text-center header-receita mb-3 bg-primary"><i class="fas fa-shopping-cart me-2"></i>CARRINHO DE COMPRAS</div>
+                                    <div class="carrinho-lista mb-3" id="areaCarrinho">
+                                        <div class="text-muted small text-center mt-4">Nenhum produto adicionado.<br>Pesquise e clique no menu ao lado.</div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-3">
+                                        <div class="col-12 mb-2">
+                                            <label>SUBTOTAL (R$)</label>
+                                            <input type="text" class="form-control bg-light fw-bold" id="subtotal" value="0.00" readonly>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="text-danger fw-bold">DESCONTO (-)</label>
+                                            <input type="number" step="0.01" class="form-control border-danger text-danger valor-calculo" id="vDesconto" placeholder="0.00" oninput="calcularTotalVenda()">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="text-primary fw-bold">ACRÉSCIMO (+)</label>
+                                            <input type="number" step="0.01" class="form-control border-primary text-primary valor-calculo" id="vAcrescimo" placeholder="0.00" oninput="calcularTotalVenda()">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="total-box text-center mb-4" id="boxTotal">
+                                        <span style="font-size: 1.1rem; font-weight: normal;">TOTAL DA COMPRA:</span><br>
+                                        <span id="vTotalDisplay" style="font-size: 2rem;">R$ 0,00</span>
+                                    </div>
+
+                                    <div class="text-center header-receita mb-3 bg-secondary">PAGAMENTO E RETIRADA</div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-primary">DATA DE RETIRADA / ENTREGA</label>
+                                            <input type="date" class="form-control border-primary" id="dataEntrega" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-success">VALOR PAGO (ENTRADA R$)</label>
+                                            <input type="number" step="0.01" class="form-control border-success bg-light" id="valorEntrada" placeholder="0.00" oninput="calcularTotalVenda()">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label>CONDIÇÃO (Do Saldo Restante)</label>
+                                            <div class="d-flex gap-3 mt-1 bg-light p-2 rounded border">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="condicao" id="condAvista" value="A Vista" checked onchange="mudarParcelas()">
+                                                    <label class="form-check-label" for="condAvista">À Vista</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="condicao" id="condParcelado" value="Parcelado" onchange="mudarParcelas()">
+                                                    <label class="form-check-label" for="condParcelado">Parcelado</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>FORMA DE PGTO</label>
+                                            <select class="form-select border-success bg-light" id="formaPgto">
+                                                <option>Dinheiro</option>
+                                                <option>Pix</option>
+                                                <option>Cartão de Débito</option>
+                                                <option>Cartão de Crédito</option>
+                                                <option>Boleto</option>
+                                                <option>Bonuscred</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-4" id="divParcelas" style="display:none;">
+                                        <div class="col-12">
+                                            <label>Nº DE PARCELAS DO SALDO <small class="text-info">(+2% de juros em cada parcela)</small></label>
+                                            <select class="form-select border-warning" id="qtdParcelas" onchange="calcularTotalVenda()">
+                                                <option value="1">1x (Sem juros)</option>
+                                                <option value="2">2x</option>
+                                                <option value="3">3x</option>
+                                                <option value="4">4x</option>
+                                                <option value="5">5x</option>
+                                                <option value="6">6x</option>
+                                                <option value="7">7x</option>
+                                                <option value="8">8x</option>
+                                                <option value="9">9x</option>
+                                                <option value="10">10x</option>
+                                                <option value="11">11x</option>
+                                                <option value="12">12x</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                                        <button class="btn btn-warning me-md-2 fw-bold" type="button" onclick="processarOperacao('orcamento')">
+                                            <i class="fas fa-file-invoice"></i> GERAR ORÇAMENTO
+                                        </button>
+                                        <button class="btn btn-success fw-bold text-white shadow" type="button" id="btnFinalVenda" onclick="processarOperacao('venda')">
+                                            <i class="fas fa-shopping-cart"></i> FINALIZAR VENDA
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="alert alert-warning text-center fw-bold mt-3 border-warning shadow-sm" id="boxSaldo" style="display:none;">
+                                        SALDO DEVEDOR A PAGAR NA RETIRADA:<br>
+                                        <span id="vSaldoDisplay" style="font-size:1.5rem; display:block; margin-top:5px; color:#d39e00;">R$ 0,00</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="bg-receita-box p-3 h-100 border-primary border shadow-sm">
+                                    <div class="text-center header-receita mb-3 bg-secondary"><i class="fas fa-search me-2"></i>CATÁLOGO DE PRODUTOS</div>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-white border-primary"><i class="fas fa-search text-primary"></i></span>
+                                        <input type="text" class="form-control border-primary shadow-sm" id="buscaProduto" placeholder="Pesquisar armação ou lente..." onkeyup="filtrarProdutos()">
+                                    </div>
+                                    <div class="lista-produtos shadow-sm" id="listaProdutosDisplay">
+                                        <div class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Sincronizando estoque...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="areaImpressao" style="display: none;"></div>
+
+<script src="https://unpkg.com/imask"></script>
+<script>
+    // ==========================================
+    // CONFIGURAÇÕES GERAIS E VARIÁVEIS
+    // ==========================================
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzciM5IA25tZ9CcRkwj0-okP5CQ0IG3wpmZeT40vbPGiCtovD3au5Ccgr9jTxcJhSc6/exec"; 
+
+    let estoqueGlobal = []; 
+    let carrinho = [];
+    
+    // Trava de memória absoluta do vendedor
+    let vendedorConfirmado = "";
+
+    // Máscaras
+    IMask(document.getElementById('cpf'), { mask: '000.000.000-00' });
+    IMask(document.getElementById('cep'), { mask: '00000-000' });
+    IMask(document.getElementById('tel1'), { mask: '(00) 00000-0000' });
+    IMask(document.getElementById('tel2'), { mask: '(00) 00000-0000' });
+
+    let d = new Date(); 
+    d.setDate(d.getDate() + 7); 
+    document.getElementById('dataEntrega').valueAsDate = d;
+
+    window.onload = () => {
+        const select = document.getElementById('vendedor'); 
+        select.innerHTML = '<option value="">Carregando...</option>';
+        fetch(URL_APPS_SCRIPT).then(res => res.json()).then(data => {
+            if (data.erro) { alert("Erro de conexão: " + data.erro); return; }
+            select.innerHTML = '<option value="">Selecione seu nome...</option>';
+            if (data.vendedores && data.vendedores.length > 0) { 
+                data.vendedores.forEach(v => { if(v) select.innerHTML += `<option value="${v}">${v}</option>`; }); 
+            } else {
+                select.innerHTML += '<option value="Vendedor Teste">Vendedor Teste</option>';
+            }
+            if(data.produtos) { 
+                estoqueGlobal = data.produtos; renderizarListaProdutos(estoqueGlobal); 
+            } else { 
+                document.getElementById('listaProdutosDisplay').innerHTML = "<div class='p-4 text-center text-muted'>Sem produtos.</div>"; 
+            }
+        }).catch(err => { 
+            alert("Erro de rede. A URL do Google Apps Script pode estar incorreta."); 
+        });
+    };
+
+    function renderizarListaProdutos(lista) {
+        const div = document.getElementById('listaProdutosDisplay'); 
+        div.innerHTML = "";
+        if(lista.length === 0) { 
+            div.innerHTML = "<div class='p-4 text-center text-muted'>Nenhum produto encontrado.</div>"; 
+            return; 
+        }
+        lista.forEach((p) => {
+            div.innerHTML += `
+                <div class="produto-item d-flex justify-content-between align-items-center" onclick="addAoCarrinho('${p.codigo}', '${p.nome}', ${p.valor})">
+                    <div><small class="text-primary fw-bold">[${p.codigo}]</small><br><span style="font-weight: 600; color: #333;">${p.nome}</span></div>
+                    <div class="text-success fw-bold">R$ ${p.valor.toFixed(2)}</div>
+                </div>`;
+        });
+    }
+
+    function filtrarProdutos() {
+        const termo = document.getElementById('buscaProduto').value.toLowerCase();
+        const filtrados = estoqueGlobal.filter(p => p.nome.toLowerCase().includes(termo) || String(p.codigo).includes(termo));
+        renderizarListaProdutos(filtrados);
+    }
+
+    function addAoCarrinho(codigo, nome, valor) {
+        const itemExistente = carrinho.find(i => i.codigo === codigo);
+        if(itemExistente) { 
+            itemExistente.qtd += 1; 
+        } else { 
+            carrinho.push({ codigo, nome, valor, qtd: 1 }); 
+        }
+        atualizarCarrinhoVisual();
+    }
+    
+    function removerDoCarrinho(index) { 
+        carrinho.splice(index, 1); 
+        atualizarCarrinhoVisual(); 
+    }
+    
+    function alterarQtd(index, novaQtd) { 
+        if(novaQtd < 1) return; 
+        carrinho[index].qtd = parseInt(novaQtd); 
+        atualizarCarrinhoVisual(); 
+    }
+
+    function atualizarCarrinhoVisual() {
+        const div = document.getElementById('areaCarrinho'); 
+        div.innerHTML = ""; 
+        let subtotal = 0;
+        if(carrinho.length === 0) {
+            div.innerHTML = '<div class="text-muted small text-center mt-4">Nenhum produto adicionado.</div>';
+        } else {
+            carrinho.forEach((item, index) => {
+                const totalItem = item.valor * item.qtd; 
+                subtotal += totalItem;
+                div.innerHTML += `
+                    <div class="d-flex justify-content-between align-items-center bg-white p-2 border rounded mb-2 shadow-sm">
+                        <div style="flex: 2;"><span class="fw-bold text-dark d-block" style="font-size:0.9rem">${item.nome}</span><small class="text-muted">R$ ${item.valor.toFixed(2)} un</small></div>
+                        <div class="d-flex align-items-center mx-2"><input type="number" class="form-control text-center p-1" style="width:50px; font-weight:bold;" value="${item.qtd}" onchange="alterarQtd(${index}, this.value)"></div>
+                        <div class="fw-bold text-success" style="width: 85px; text-align:right;">R$ ${totalItem.toFixed(2)}</div>
+                        <button class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerDoCarrinho(${index})"><i class="fas fa-trash-alt fa-lg"></i></button>
+                    </div>`;
+            });
+        }
+        document.getElementById('subtotal').value = subtotal.toFixed(2);
+        calcularTotalVenda();
+    }
+
+    function calcularTotalVenda() {
+        const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+        const desconto = parseFloat(document.getElementById('vDesconto').value) || 0;
+        const acrescimo = parseFloat(document.getElementById('vAcrescimo').value) || 0;
+        const entrada = parseFloat(document.getElementById('valorEntrada').value) || 0;
+        
+        let totalBase = subtotal - desconto + acrescimo;
+        if(totalBase < 0) totalBase = 0;
+        
+        let restanteBase = totalBase - entrada;
+        if(restanteBase < 0) restanteBase = 0;
+        
+        const condicaoElement = document.querySelector('input[name="condicao"]:checked');
+        const condicao = condicaoElement ? condicaoElement.value : 'A Vista';
+        
+        let saldoDevedorFinal = restanteBase;
+        let textoDescricaoParcelas = "";
+
+        if (condicao === 'Parcelado' && restanteBase > 0) {
+            const qtdParcelas = parseInt(document.getElementById('qtdParcelas').value) || 1;
+            if (qtdParcelas > 1) {
+                let valorParcelaBase = restanteBase / qtdParcelas;
+                let valorParcelaComJuros = valorParcelaBase * 1.02; 
+                saldoDevedorFinal = valorParcelaComJuros * qtdParcelas;
+                textoDescricaoParcelas = `<br><span style="font-size: 1.1rem; color: #17a2b8; font-weight: bold; background: white; padding: 2px 8px; border-radius: 5px; margin-top: 5px; display: inline-block;">${qtdParcelas}x de ${valorParcelaComJuros.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>`;
+            }
+        }
+        
+        document.getElementById('vTotalDisplay').innerHTML = totalBase.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('vTotalDisplay').dataset.valor = totalBase.toFixed(2); 
+
+        if(entrada > 0 || condicao === 'Parcelado') {
+            document.getElementById('boxSaldo').style.display = 'block';
+            document.getElementById('vSaldoDisplay').innerHTML = saldoDevedorFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + textoDescricaoParcelas;
+            document.getElementById('vSaldoDisplay').dataset.valor = saldoDevedorFinal.toFixed(2);
+            document.getElementById('vSaldoDisplay').dataset.parcelatexto = (condicao === 'Parcelado' && restanteBase > 0 && parseInt(document.getElementById('qtdParcelas').value) > 1) ? `(${document.getElementById('qtdParcelas').value}x)` : '';
+        } else {
+            document.getElementById('boxSaldo').style.display = 'none';
+            document.getElementById('vSaldoDisplay').dataset.valor = "0.00";
+            document.getElementById('vSaldoDisplay').dataset.parcelatexto = "";
+        }
+    }
+
+    function mudarParcelas() {
+        const condicao = document.querySelector('input[name="condicao"]:checked').value;
+        const divParc = document.getElementById('divParcelas');
+        if(condicao === 'Parcelado') { 
+            divParc.style.display = 'flex'; 
+        } else { 
+            divParc.style.display = 'none'; 
+            document.getElementById('qtdParcelas').value = "1"; 
+        }
+        calcularTotalVenda();
+    }
+
+    // =========================================================================
+    // INTEGRAÇÃO VIACEP: PREENCHIMENTO AUTOMÁTICO DE ENDEREÇO
+    // =========================================================================
+    document.getElementById('cep').addEventListener('blur', function() {
+        let v = this.value.replace(/\D/g,'');
+        if(v.length === 8) { 
+            fetch(`https://viacep.com.br/ws/${v}/json/`)
+            .then(r => r.json())
+            .then(d => { 
+                if(!d.erro) {
+                    document.getElementById('rua').value = d.logradouro || "";
+                    document.getElementById('bairro').value = d.bairro || "";
+                    document.getElementById('cidade_uf').value = `${d.localidade} - ${d.uf}`;
+                    document.getElementById('numero').focus(); // Foca no número para agilizar
+                } 
+            }); 
+        }
+    });
+
+    // =========================================================================
+    // CPF PREENCHIMENTO AUTOMÁTICO (ATUALIZADO COM OS NOVOS CAMPOS)
+    // =========================================================================
+    document.getElementById('cpf').addEventListener('blur', async function() {
+        if(this.value.length === 14) {
+            this.classList.add('loading-cpf');
+            try {
+                const response = await fetch(URL_APPS_SCRIPT + "?cpf=" + this.value); 
+                const data = await response.json();
+                if(data && data.encontrado) {
+                    document.getElementById('nome').value = data.nome || ""; 
+                    document.getElementById('nascimento').value = data.nascimento || ""; 
+                    document.getElementById('cep').value = data.cep || ""; 
+                    document.getElementById('rua').value = data.rua || "";
+                    document.getElementById('numero').value = data.numero || "";
+                    document.getElementById('bairro').value = data.bairro || "";
+                    document.getElementById('complemento').value = data.complemento || "";
+                    document.getElementById('cidade_uf').value = data.cidade || ""; 
+                    document.getElementById('email').value = data.email || ""; 
+                    document.getElementById('tel1').value = data.tel1 || ""; 
+                    document.getElementById('tel2').value = data.tel2 || ""; 
+                    document.getElementById('obs').value = data.obs || "";
+                    if(data.sexo) { 
+                        const radio = document.querySelector(`input[name="sexo"][value="${data.sexo}"]`); 
+                        if(radio) radio.checked = true; 
+                    }
+                    alert("✅ Dados do cliente preenchidos automaticamente!");
+                }
+            } catch (erro) {} finally { this.classList.remove('loading-cpf'); }
+        }
+    });
+
+    function travarDioptria(elemento, isCilindro, isAdicao = false) {
+        if (!elemento.value) return; 
+        let valor = parseFloat(String(elemento.value).replace(',', '.')); 
+        if (isNaN(valor)) { elemento.value = ""; return; }
+        valor = Math.round(valor * 4) / 4; 
+        if (isCilindro && valor > 0) valor = -valor; 
+        if (isAdicao && valor < 0) valor = Math.abs(valor);
+        elemento.value = (valor > 0 && !isCilindro ? "+" : "") + valor.toFixed(2); 
+        calcularPerto();
+    }
+
+    function formatarDataBR(dataString) {
+        if(!dataString) return '___/___/_____';
+        let d = new Date(dataString + 'T00:00:00'); 
+        return d.toLocaleDateString('pt-BR');
+    }
+
+    // ========================================================
+    // GERAÇÃO DE PDF (LAYOUT COMPACTO)
+    // ========================================================
+    function montarHtmlImpressao(dadosVenda) {
+        const divImpressao = document.getElementById('areaImpressao');
+        document.getElementById('sistemaPDV').style.display = 'none'; 
+        divImpressao.style.display = 'block';
+
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        const osNumero = dadosVenda.idVenda; 
+        const dataRetiradaFormatada = formatarDataBR(document.getElementById('dataEntrega').value);
+        
+        let produtosHTML = "";
+        carrinho.forEach(item => { 
+            produtosHTML += `<div class="print-row"><span>${item.qtd}x ${item.nome}</span> <span>R$ ${(item.valor * item.qtd).toFixed(2)}</span></div>`; 
+        });
+
+        const totalBaseTexto = parseFloat(document.getElementById('vTotalDisplay').dataset.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const entradaValor = parseFloat(document.getElementById('valorEntrada').value || 0);
+        const entradaTexto = entradaValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const saldoValor = parseFloat(document.getElementById('vSaldoDisplay').dataset.valor || 0);
+        const saldoTexto = saldoValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const textParcelaExtra = document.getElementById('vSaldoDisplay').dataset.parcelatexto || '';
+
+        if (dadosVenda.tipo === 'orcamento') {
+            const htmlOrcamento = `
+                <div class="via-impressao">
+                    <div class="print-title">ÓTICAS AMMO</div>
+                    <div class="print-subtitle" style="font-size: 14px;">ORÇAMENTO DE PRODUTOS</div>
+                    <div class="print-section" style="background:#f0f0f0; padding:8px; border-radius:3px;">
+                        <b>ID:</b> ${osNumero} | <b>Data:</b> ${dataAtual}<br>
+                        <b>Colaborador(a):</b> ${dadosVenda.vendedor}<br>
+                        <b>Cliente:</b> ${dadosVenda.nomeCliente} | <b>CPF:</b> ${document.getElementById('cpf').value}<br>
+                        <b>Contato:</b> ${document.getElementById('tel1').value}
+                    </div>
+                    <div class="print-section" style="margin-top: 15px;">
+                        <b style="font-size: 11px;">PRODUTOS SELECIONADOS:</b><br>
+                        ${produtosHTML}
+                        <hr style="border-top:1px solid #000; margin: 6px 0;">
+                        <div class="print-row"><span style="font-size:12px; font-weight:bold;">VALOR TOTAL:</span> <span class="destaque-valor">${totalBaseTexto}</span></div>
+                    </div>
+                    <div class="print-section" style="text-align:center; margin-top:20px; font-size:11px; border: 2px dashed #000; padding: 10px; font-weight:bold;">
+                        ⚠️ Este orçamento é válido por até 48 horas.
+                    </div>
+                </div>`;
+            divImpressao.innerHTML = htmlOrcamento;
+        } 
+        else {
+            const htmlLab = `
+                <div class="via-impressao">
+                    <div class="print-title">ÓTICAS AMMO</div>
+                    <div class="print-subtitle">ORDEM DE SERVIÇO - VIA LABORATÓRIO</div>
+                    <div class="print-section" style="background:#f0f0f0; padding:6px; border-radius:3px;">
+                        <b>OS:</b> ${osNumero} | <b>Data:</b> ${dataAtual} | <b>Previsão:</b> ${dataRetiradaFormatada}<br>
+                        <b>Colaborador(a):</b> ${dadosVenda.vendedor}<br>
+                    </div>
+                    <div class="print-section">
+                        <b>PRODUTOS (Armação / Lentes):</b><br>
+                        ${carrinho.map(i => `${i.qtd}x ${i.nome}`).join('<br>')}
+                    </div>
+                    <div class="print-section">
+                        <table class="print-table">
+                            <tr style="background:#ddd"><th colspan="6">VISÃO PARA LONGE</th></tr>
+                            <tr><th>Olho</th><th>Esf</th><th>Cil</th><th>Eixo</th><th>DNP</th><th>Alt</th></tr>
+                            <tr><td><b>OD</b></td><td>${document.getElementById('lOdEsf').value}</td><td>${document.getElementById('lOdCil').value}</td><td>${document.getElementById('lOdEixo').value}</td><td>${document.getElementById('dnpOd').value}</td><td>${document.getElementById('altOd').value}</td></tr>
+                            <tr><td><b>OE</b></td><td>${document.getElementById('lOeEsf').value}</td><td>${document.getElementById('lOeCil').value}</td><td>${document.getElementById('lOeEixo').value}</td><td>${document.getElementById('dnpOe').value}</td><td>${document.getElementById('altOe').value}</td></tr>
+                            
+                            <tr style="background:#ddd"><th colspan="6">VISÃO PARA PERTO</th></tr>
+                            <tr><th>Olho</th><th>Esf</th><th>Cil</th><th>Eixo</th><th colspan="2">Adição</th></tr>
+                            <tr><td><b>OD</b></td><td>${document.getElementById('pOdEsf').value}</td><td>${document.getElementById('pOdCil').value}</td><td>${document.getElementById('pOdEixo').value}</td><td colspan="2" rowspan="2" style="vertical-align:middle; font-weight:bold; font-size:12px;">${document.getElementById('adicao').value}</td></tr>
+                            <tr><td><b>OE</b></td><td>${document.getElementById('pOeEsf').value}</td><td>${document.getElementById('pOeCil').value}</td><td>${document.getElementById('pOeEixo').value}</td></tr>
+                        </table>
+                    </div>
+                </div>`;
+
+            const htmlCaixa = `
+                <div class="via-impressao">
+                    <div class="print-title">ÓTICAS AMMO</div>
+                    <div class="print-subtitle">CONTROLE INTERNO - VIA CAIXA</div>
+                    <div class="print-section" style="background:#f0f0f0; padding:6px; border-radius:3px;">
+                        <b>OS:</b> ${osNumero} | <b>Data:</b> ${dataAtual}<br>
+                        <b>Vendedor:</b> ${dadosVenda.vendedor}<br>
+                        <b>Cliente:</b> ${dadosVenda.nomeCliente} | <b>CPF:</b> ${document.getElementById('cpf').value}<br>
+                        <b>Contato:</b> ${document.getElementById('tel1').value}
+                    </div>
+                    <div class="print-section">
+                        <b>PRODUTOS:</b><br>${produtosHTML}
+                        <hr style="border-top:1px solid #000; margin: 4px 0;">
+                        <div class="print-row"><span>TOTAL DA COMPRA:</span> <span class="destaque-valor">${totalBaseTexto}</span></div>
+                        <div class="print-row"><span>VALOR RECEBIDO (Entrada):</span> <b>${entradaTexto}</b></div>
+                        <div class="print-row"><span>SALDO DEVEDOR:</span> <span class="destaque-valor">${saldoTexto} ${textParcelaExtra}</span></div>
+                        <div class="print-row"><span>FORMA DE PGTO PREVISTA:</span> <b>${dadosVenda.formaPagamento}</b></div>
+                    </div>
+                    
+                    <div class="termo-entrega">
+                        <div class="termo-titulo">TERMO DE CONFERÊNCIA E RETIRADA</div>
+                        <div class="termo-desc">Preencher no ato da retirada:</div>
+                        <div class="check-item"><span class="check-box">(   ) Sim   (   ) Não</span> Óculos entregue em perfeito estado?</div>
+                        <div class="check-item"><span class="check-box">(   ) Sim   (   ) Não</span> Recebeu a receita oftálmica original de volta?</div>
+                        <div class="check-item"><span class="check-box">(   ) Sim   (   ) Não</span> Realizou o teste de visão (Longe e Perto)?</div>
+                        <div class="check-item"><span class="check-box">(   ) Sim   (   ) Não</span> Foi instruído(a) sobre uso e limpeza?</div>
+                    </div>
+
+                    <div class="assinatura-box">
+                        <div class="assinatura-linha">Assinatura do Cliente</div>
+                        <div class="assinatura-linha">Assinatura do Caixa</div>
+                    </div>
+                </div>`;
+
+            const htmlCliente = `
+                <div class="via-impressao">
+                    <div class="print-title">ÓTICAS AMMO</div>
+                    <div class="print-subtitle">COMPROVANTE DO CLIENTE</div>
+                    <div class="print-section" style="background:#f0f0f0; padding:6px; border-radius:3px;">
+                        <b>OS:</b> ${osNumero} | <b>Data:</b> ${dataAtual}<br>
+                        <b>Vendedor:</b> ${dadosVenda.vendedor}<br>
+                        <b>Previsão de Retirada:</b> <span style="font-size:12px; font-weight:bold;">${dataRetiradaFormatada}</span>
+                    </div>
+                    <div class="print-section">
+                        <b>DESCRIÇÃO:</b><br>${produtosHTML}
+                        <hr style="border-top:1px solid #000; margin: 4px 0;">
+                        <div class="print-row"><span>TOTAL DA COMPRA:</span> <span class="destaque-valor">${totalBaseTexto}</span></div>
+                        <div class="print-row"><span>VALOR PAGO (Entrada):</span> <b>${entradaTexto}</b></div>
+                        <div class="print-row" style="background: #e9ecef; padding: 2px;"><span>SALDO DEVEDOR (Faltante):</span> <span class="destaque-valor">${saldoTexto} ${textParcelaExtra}</span></div>
+                    </div>
+                    <div class="print-section" style="text-align:center; margin-top:10px; font-size:9px; border: 1px dashed #000; padding: 4px;">
+                        <b>Obrigado pela preferência!</b><br>
+                        A apresentação deste comprovante é obrigatória para a retirada.
+                    </div>
+                </div>`;
+
+            divImpressao.innerHTML = htmlLab + htmlCaixa + htmlCliente;
+        }
+    }
+
+    // ========================================================
+    // PROCESSAMENTO CENTRALIZADO
+    // ========================================================
+    async function processarOperacao(tipoOperacao) {
+        if(carrinho.length === 0) { alert("Adicione produtos ao carrinho antes de prosseguir!"); return; }
+        
+        const nomeParaSalvar = vendedorConfirmado || document.getElementById('vendedor').value;
+        
+        if(!nomeParaSalvar) { alert("Erro: Nome do consultor perdido. Recarregue a página."); return; }
+
+        const btn = tipoOperacao === 'venda' ? document.getElementById('btnFinalVenda') : null;
+        if(btn) {
+            btn.disabled = true;
+            btn.innerHTML = "ENVIANDO PEDIDO... <i class='fas fa-spinner fa-spin'></i>";
+        }
+
+        const idPedidoUnico = "AMMO-" + Date.now().toString().slice(-6);
+
+        const condicao = document.querySelector('input[name="condicao"]:checked').value;
+        const entrada = parseFloat(document.getElementById('valorEntrada').value) || 0;
+        const parcelasInt = parseInt(document.getElementById('qtdParcelas').value) || 1;
+        const saldoValor = parseFloat(document.getElementById('vSaldoDisplay').dataset.valor) || 0;
+
+        let condicaoEnvio = condicao;
+        let parcelasEnvio = "";
+
+        if (entrada > 0) {
+            condicaoEnvio = "Parcial (" + condicao + ")";
+            if(condicao === 'Parcelado') {
+                parcelasEnvio = `Entrada: R$ ${entrada.toFixed(2)} | Restante: ${parcelasInt}x (Saldo Total: R$ ${saldoValor.toFixed(2)})`;
+            } else {
+                parcelasEnvio = `Entrada: R$ ${entrada.toFixed(2)} | Restante: À Vista (Saldo Total: R$ ${saldoValor.toFixed(2)})`;
+            }
+        } else {
+            parcelasEnvio = condicao === 'Parcelado' ? parcelasInt + "x" : "1x";
+        }
+        
+        let valorBaseDaCompra = parseFloat(document.getElementById('vTotalDisplay').dataset.valor) || 0;
+        let valorGeral = valorBaseDaCompra;
+        
+        if (condicao === 'Parcelado' && parcelasInt > 1) {
+            valorGeral = entrada + saldoValor;
+        }
+
+        let saldoRealParaPlanilha = saldoValor;
+        if (condicao === 'A Vista' && entrada === 0) {
+            saldoRealParaPlanilha = valorBaseDaCompra;
+        }
+
+        const dadosEnvio = {
+            tipo: tipoOperacao, 
+            idVenda: idPedidoUnico,
+            vendedor: nomeParaSalvar,
+            nomeCliente: document.getElementById('nome').value || "Cliente não identificado",
+            cpf: document.getElementById('cpf').value,
+            telefone: document.getElementById('tel1').value,
+            endereco: document.getElementById('rua').value + ", " + document.getElementById('numero').value + " - " + document.getElementById('bairro').value, // Formato composto para relatórios antigos
+            itens: carrinho,
+            subtotal: document.getElementById('subtotal').value,
+            desconto: document.getElementById('vDesconto').value || 0,
+            acrescimo: document.getElementById('vAcrescimo').value || 0,
+            valorTotal: valorGeral.toFixed(2),
+            formaPagamento: document.getElementById('formaPgto').value,
+            condicao: condicaoEnvio,
+            parcelas: parcelasEnvio,
+            parcelasNum: parcelasInt,      
+            valorPago: entrada,            
+            saldoDevedor: saldoRealParaPlanilha        
+        };
+
+        try {
+            await fetch(URL_APPS_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosEnvio) });
+            
+            if (tipoOperacao === 'venda') {
+                alert("🚀 Venda " + idPedidoUnico + " registrada com sucesso!");
+            } else {
+                alert("📝 Orçamento " + idPedidoUnico + " salvo com sucesso!");
+            }
+
+            montarHtmlImpressao(dadosEnvio);
+            window.print();
+            
+            document.getElementById('areaImpressao').style.display = 'none';
+            document.getElementById('sistemaPDV').style.display = 'block';
+            
+            location.reload(); 
+            
+        } catch(e) {
+            alert("Erro de conexão. A venda não foi salva na planilha, tente novamente.");
+            if(btn) { 
+                btn.disabled = false; 
+                btn.innerHTML = "<i class='fas fa-shopping-cart'></i> FINALIZAR VENDA"; 
+            }
+        }
+    }
+    
+    // ========================================================
+    // TRANSIÇÃO DE MÓDULOS E TRAVA DO VENDEDOR (ATUALIZADA)
+    // ========================================================
+    document.getElementById('formPDV').onsubmit = async (e) => {
+        e.preventDefault(); 
+        
+        const sel = document.getElementById('vendedor');
+        if (sel.selectedIndex === -1 || sel.options[sel.selectedIndex].value === "") { 
+            alert("Por favor, selecione seu nome antes de continuar!"); 
+            return; 
+        }
+        
+        vendedorConfirmado = sel.options[sel.selectedIndex].value;
+
+        const btn = document.getElementById('btnSalvarCliente'); 
+        btn.disabled = true; 
+        btn.innerHTML = "SALVANDO...";
+        
+        // Objeto atualizado com os novos campos de endereço completos
+        const dados = { 
+            tipo: 'cad_cliente', 
+            vendedor: vendedorConfirmado, 
+            nome: document.getElementById('nome').value, 
+            nascimento: document.getElementById('nascimento').value, 
+            cpf: document.getElementById('cpf').value, 
+            cep: document.getElementById('cep').value,
+            rua: document.getElementById('rua').value,
+            numero: document.getElementById('numero').value,
+            bairro: document.getElementById('bairro').value,
+            complemento: document.getElementById('complemento').value,
+            cidade: document.getElementById('cidade_uf').value,
+            sexo: document.querySelector('input[name="sexo"]:checked').value, 
+            email: document.getElementById('email').value, 
+            tel1: document.getElementById('tel1').value, 
+            tel2: document.getElementById('tel2').value, 
+            obs: document.getElementById('obs').value 
+        };
+        
+        try { 
+            await fetch(URL_APPS_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) }); 
+            document.getElementById('formPDV').style.display = 'none'; 
+            document.getElementById('moduloReceita').style.display = 'block'; 
+            document.getElementById('tituloCard').innerHTML = '<i class="fas fa-glasses me-2"></i> 2. RECEITA'; 
+            document.querySelectorAll('.nomeClienteDisplay').forEach(el => el.innerText = dados.nome); 
+        } catch(err) { 
+            btn.disabled = false; 
+            btn.innerHTML = "TENTAR NOVAMENTE"; 
+        }
+    };
+
+    async function enviarReceita() {
+        const btn = document.getElementById('btnSalvarReceita'); 
+        btn.disabled = true; 
+        btn.innerHTML = "FINALIZANDO...";
+        const dados = { 
+            tipo: 'receita', 
+            nomeCliente: document.getElementById('nome').value, 
+            medico: document.getElementById('medico').value, 
+            dataReceita: document.getElementById('dataReceita').value, 
+            lOdEsf: document.getElementById('lOdEsf').value, 
+            lOdCil: document.getElementById('lOdCil').value, 
+            lOdEixo: document.getElementById('lOdEixo').value, 
+            lOeEsf: document.getElementById('lOeEsf').value, 
+            lOeCil: document.getElementById('lOeCil').value, 
+            lOeEixo: document.getElementById('lOeEixo').value, 
+            adicao: document.getElementById('adicao').value, 
+            pOdEsf: document.getElementById('pOdEsf').value, 
+            pOdCil: document.getElementById('pOdCil').value, 
+            pOdEixo: document.getElementById('pOdEixo').value, 
+            pOeEsf: document.getElementById('pOeEsf').value, 
+            pOeCil: document.getElementById('pOeCil').value, 
+            pOeEixo: document.getElementById('pOeEixo').value, 
+            dnpOd: document.getElementById('dnpOd').value, 
+            dnpOe: document.getElementById('dnpOe').value, 
+            altOd: document.getElementById('altOd').value, 
+            altOe: document.getElementById('altOe').value 
+        };
+        try { 
+            await fetch(URL_APPS_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) }); 
+            document.getElementById('moduloReceita').style.display = 'none'; 
+            document.getElementById('moduloVendas').style.display = 'block'; 
+            document.getElementById('tituloCard').innerHTML = '<i class="fas fa-shopping-cart me-2"></i> 3. ORÇAMENTO E VENDA'; 
+        } catch(err) { 
+            btn.disabled = false; 
+            btn.innerHTML = "TENTAR NOVAMENTE"; 
+        }
+    }
+
+    // ========================================================
+    // CÁLCULO INTELIGENTE DO GRAU DE PERTO E TRAVA DE DIOPTRIA
+    // ========================================================
+    function travarDioptria(elemento, isCilindro, isAdicao = false) {
+        if (!elemento.value) { 
+            calcularPerto(); 
+            return; 
+        } 
+        let valor = parseFloat(String(elemento.value).replace(',', '.')); 
+        if (isNaN(valor)) { 
+            elemento.value = ""; 
+            calcularPerto(); 
+            return; 
+        }
+        valor = Math.round(valor * 4) / 4; 
+        if (isCilindro && valor > 0) valor = -valor; 
+        if (isAdicao && valor < 0) valor = Math.abs(valor); 
+        
+        elemento.value = (valor > 0 && !isCilindro ? "+" : "") + valor.toFixed(2); 
+        calcularPerto();
+    }
+
+    function calcularPerto() {
+        const adicaoStr = document.getElementById('adicao').value.replace(',', '.');
+        const adicao = parseFloat(adicaoStr);
+        
+        if (!isNaN(adicao) && adicao > 0) {
+            const lOdEsf = parseFloat(document.getElementById('lOdEsf').value.replace(',', '.')) || 0; 
+            const lOeEsf = parseFloat(document.getElementById('lOeEsf').value.replace(',', '.')) || 0;
+            
+            let resOd = lOdEsf + adicao; 
+            let resOe = lOeEsf + adicao;
+            
+            document.getElementById('pOdEsf').value = (resOd > 0 ? "+" : "") + resOd.toFixed(2); 
+            document.getElementById('pOeEsf').value = (resOe > 0 ? "+" : "") + resOe.toFixed(2);
+            
+            document.getElementById('pOdCil').value = document.getElementById('lOdCil').value; 
+            document.getElementById('pOdEixo').value = document.getElementById('lOdEixo').value;
+            document.getElementById('pOeCil').value = document.getElementById('lOeCil').value; 
+            document.getElementById('pOeEixo').value = document.getElementById('lOeEixo').value;
+        } else { 
+            document.getElementById('pOdEsf').value = ""; 
+            document.getElementById('pOeEsf').value = ""; 
+            document.getElementById('pOdCil').value = ""; 
+            document.getElementById('pOdEixo').value = "";
+            document.getElementById('pOeCil').value = ""; 
+            document.getElementById('pOeEixo').value = "";
+        }
+    }
+
+    ['lOdEsf', 'lOeEsf', 'lOdCil', 'lOeCil', 'lOdEixo', 'lOeEixo', 'adicao'].forEach(id => { 
+        const input = document.getElementById(id);
+        if(input) {
+            input.addEventListener('input', calcularPerto);
+            input.addEventListener('keyup', calcularPerto);
+        }
+    });
+</script>
+</body>
+</html>
