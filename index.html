@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Óticas Ammo - Simulador Profissional</title>
+    <title>Óticas Ammo - Simulador Profissional 3D</title>
     <style>
         :root {
             --bg-menu-dark: rgba(15, 15, 15, 0.75);
@@ -19,20 +19,31 @@
         .spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: var(--accent-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* MOTOR VISUAL */
-        .simulator-stage { position: absolute; top: 0; left: 320px; right: 0; bottom: 50px; display: flex; justify-content: center; align-items: center; z-index: 1; }
-        .svg-engine { width: 100%; height: 100%; max-height: 90vh; }
-        
-        /* Borda preta e grossa da lente */
-        .lens-outline { fill: none; stroke: rgba(0, 0, 0, 0.9); stroke-width: 7; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.7)); }
-        
-        .corridor-line { fill: none; stroke: #ffffff; stroke-width: 4.5; stroke-dasharray: 14, 22; stroke-linecap: round; transition: d 0.7s cubic-bezier(0.25, 1, 0.5, 1); }
-        #full-bg-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; overflow: hidden; background: #111; }
-        #img-blurred-bg, #video-blurred-bg { width: 100%; height: 100%; object-fit: cover; filter: blur(5px) brightness(0.95); }
+        /* FUNDO E EFEITO 3D */
+        #full-bg-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; overflow: hidden; background: #111; transform: scale(1.1); transition: transform 0.1s ease-out; }
+        #img-blurred-bg, #video-blurred-bg { width: 100%; height: 100%; object-fit: cover; filter: blur(6px) brightness(0.85); }
         #video-blurred-bg { display: none; }
 
+        /* MOTOR VISUAL (LENTE) */
+        .simulator-stage { 
+            position: absolute; top: 0; left: 320px; right: 0; bottom: 50px; 
+            display: flex; justify-content: center; align-items: center; z-index: 1; 
+            transform-style: preserve-3d; /* Ativa o modo 3D */
+            transition: transform 0.1s ease-out; /* Suaviza o movimento */
+        }
+        .svg-engine { width: 100%; height: 100%; max-height: 90vh; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6)); }
+        
+        /* Borda da lente (AGORA CINZA 3D) */
+        .lens-outline { 
+            fill: none; 
+            stroke: url(#lens-grad); /* Usa o gradiente cinza criado no SVG */
+            stroke-width: 9; 
+        }
+        
+        .corridor-line { fill: none; stroke: #ffffff; stroke-width: 4.5; stroke-dasharray: 14, 22; stroke-linecap: round; transition: d 0.7s cubic-bezier(0.25, 1, 0.5, 1); }
+
         /* PAINEL LATERAL */
-        .left-panel { position: absolute; top: 0; left: 0; bottom: 50px; width: 320px; background: var(--bg-menu-dark); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; z-index: 10; }
+        .left-panel { position: absolute; top: 0; left: 0; bottom: 50px; width: 320px; background: var(--bg-menu-dark); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; z-index: 10; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         .panel-header { padding: 20px; background: rgba(0,0,0,0.4); color: var(--accent-blue); font-size: 11px; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); letter-spacing: 1px; }
         .lens-list { flex: 1; overflow-y: auto; }
         
@@ -55,17 +66,18 @@
         .opt-select { border: none; background: transparent; font-size: 12px; color: #007aff; font-weight: 700; text-align: right; outline: none; appearance: none; direction: rtl; cursor: pointer; min-width: 100px; }
 
         /* UI E RODAPÉ */
-        .top-menu { position: absolute; top: 20px; left: 340px; display: flex; background: var(--bg-menu-dark); backdrop-filter: blur(10px); border-radius: 8px; z-index: 10; border: 1px solid rgba(255,255,255,0.1); }
+        .top-menu { position: absolute; top: 20px; left: 340px; display: flex; background: var(--bg-menu-dark); backdrop-filter: blur(10px); border-radius: 8px; z-index: 10; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .top-btn { padding: 12px 20px; color: #fff; font-size: 12px; border-right: 1px solid rgba(255,255,255,0.1); font-weight: 600; cursor: pointer; }
         .env-selector { background: transparent; color: #fff; border: none; outline: none; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        .right-menu { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); display: flex; flex-direction: column; background: var(--bg-menu-dark); backdrop-filter: blur(10px); border-radius: 10px; z-index: 10; border: 1px solid rgba(255,255,255,0.1); }
+        .right-menu { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); display: flex; flex-direction: column; background: var(--bg-menu-dark); backdrop-filter: blur(10px); border-radius: 10px; z-index: 10; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .right-btn { padding: 18px 12px; color: #fff; font-size: 10px; text-align: center; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .right-btn.active-green { background: #28a745; border-radius: 0 0 10px 10px; font-weight: bold; }
 
-        .bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--white-bar); border-top: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; z-index: 20; }
+        .bottom-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--white-bar); border-top: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; z-index: 20; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
         .bottom-tools { display: flex; height: 100%; }
-        .tool-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 16px; color: #007aff; font-size: 9px; font-weight: 700; text-transform: uppercase; border-right: 1px solid #dee2e6; cursor: pointer; }
+        .tool-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 16px; color: #007aff; font-size: 9px; font-weight: 700; text-transform: uppercase; border-right: 1px solid #dee2e6; cursor: pointer; transition: 0.2s; }
+        .tool-btn:hover { background: #e9ecef; }
         .cart-area { display: flex; align-items: center; gap: 15px; padding-right: 20px; }
         .cart-price { font-weight: 800; color: #000; font-size: 15px; width: 110px; text-align: right; }
 
@@ -77,9 +89,10 @@
         .calc-popup { right: 20px; flex-direction: column; width: 220px; }
         #calc-display { width: 100%; height: 35px; text-align: right; font-size: 18px; margin-bottom: 10px; border: 1px solid #ddd; }
         .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-        .calc-keys button { height: 35px; cursor: pointer; }
+        .calc-keys button { height: 35px; cursor: pointer; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
 
-        .btn-lancar-os { background: var(--accent-blue); color: #fff; border: none; padding: 10px; font-weight: 700; border-radius: 4px; margin: 10px 20px; cursor: pointer; }
+        .btn-lancar-os { background: var(--accent-blue); color: #fff; border: none; padding: 10px; font-weight: 700; border-radius: 4px; margin: 10px 20px; cursor: pointer; transition: 0.2s; }
+        .btn-lancar-os:hover { background: #0056b3; }
     </style>
 </head>
 <body>
@@ -94,11 +107,18 @@
     <div class="simulator-stage">
         <svg class="svg-engine" viewBox="0 0 1000 660">
             <defs>
+                <!-- GRADIENTE CINZA PARA O CONTORNO DA LENTE -->
+                <linearGradient id="lens-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#e0e0e0" />
+                    <stop offset="50%" stop-color="#888888" />
+                    <stop offset="100%" stop-color="#444444" />
+                </linearGradient>
+
                 <clipPath id="lens-outline-clip"><path d="M120 120 C 300 60, 700 60, 880 120 C 980 270, 900 520, 750 580 C 600 620, 400 620, 250 580 C 100 520, 20 270, 120 120 Z" /></clipPath>
                 <clipPath id="corridor-clip"><path id="svg-corridor-path" d="" /></clipPath>
             </defs>
             <g clip-path="url(#lens-outline-clip)">
-                <image id="img-sharp" href="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1600&auto=format&fit=crop" x="0" y="0" width="1000" height="660" preserveAspectRatio="xMidYMid slice" clip-path="url(#corridor-clip)" />
+                <image id="img-sharp" href="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1600&auto=format&fit=crop" x="-50" y="-30" width="1100" height="720" preserveAspectRatio="xMidYMid slice" clip-path="url(#corridor-clip)" />
                 <foreignObject id="fo-video" x="0" y="0" width="1000" height="660" clip-path="url(#corridor-clip)" style="display: none;"><video id="video-sharp" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video></foreignObject>
                 <path id="svg-line-left" class="corridor-line" d="" /><path id="svg-line-right" class="corridor-line" d="" />
             </g>
@@ -113,7 +133,14 @@
 
     <div class="top-menu">
         <div class="top-btn">▦ Tabela</div>
-        <div class="top-btn">🖼️ <select class="env-selector" id="env-select" onchange="changeBg(this.value)"><option value="0">Escritório</option><option value="1">Carro</option><option value="2">Olho</option><option value="3">Livro</option><option value="4">PC</option><option value="5">Montanha</option></select></div>
+        <div class="top-btn">🖼️ <select class="env-selector" id="env-select" onchange="changeBg(this.value)">
+            <option value="0">Escritório</option>
+            <option value="1">Carro</option>
+            <option value="2">Olho</option>
+            <option value="3">Livro</option>
+            <option value="4">PC</option>
+            <option value="5">Montanha</option>
+        </select></div>
     </div>
 
     <div class="right-menu"><div class="right-btn">📝 Desc</div><div class="right-btn">ℹ️ Info</div><div class="right-btn active-green" id="btn-cam" onclick="toggleCamera()">👓 Simu</div></div>
@@ -154,8 +181,7 @@
         let activeLensItem = null;
 
         const lensDesignMap = { 'Ammo One': 'lvl1', 'Ammo Start D+': 'lvl2', 'Ammo Like': 'lvl3', 'Ammo Select': 'lvl4', 'Ammo Premium': 'lvl5', 'Ammo Maxima': 'lvl6', 'Ammo Supera': 'lvl7', 'Ammo Evo': 'lvl8' };
-        const addOnCosts = { surface_digital: 0, surface_freeform: 2400, trans_sim: 3600 };
-
+        
         async function loadDataFromSheets() {
             try {
                 const response = await fetch(url_api_sheets);
@@ -167,9 +193,14 @@
 
         function renderMenuLentes() {
             const container = document.getElementById('lens-container');
-            const modelosInvertidos = Object.keys(lensDatabase).reverse(); // EVO NO TOPO
+            const modelosInvertidos = Object.keys(lensDatabase).reverse(); 
 
             modelosInvertidos.forEach((modelName) => {
+                const nomeDaLente = modelName.toLowerCase();
+                if (nomeDaLente.includes('vs ') || nomeDaLente.includes('visão simples') || nomeDaLente.includes('visao simples')) {
+                    return; 
+                }
+
                 const tratamentos = lensDatabase[modelName].tratamentos;
                 const firstTreatment = Object.keys(tratamentos)[0];
                 const firstMaterial = Object.keys(tratamentos[firstTreatment])[0];
@@ -317,6 +348,48 @@
             alert('Lançado no carrinho!');
         }
 
+       // ==========================================
+        // NOVO SCRIPT: EFEITO PARALLAX 3D 360 (MOUSE + TABLET/GIROSCÓPIO)
+        // ==========================================
+        
+        // 1. Controle pelo Mouse (PCs)
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; 
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; 
+            aplicarEfeito3D(xAxis, yAxis);
+        });
+
+        // 2. Controle pelo Giroscópio (Tablets e Celulares)
+        window.addEventListener('deviceorientation', (e) => {
+            // e.gamma = inclinação esquerda/direita (-90 a 90)
+            // e.beta = inclinação frente/trás (-180 a 180)
+            
+            // Se o aparelho não tem giroscópio (PC), os valores vêm nulos, então ignoramos
+            if (e.gamma === null || e.beta === null) return;
+
+            // Suaviza a leitura do giroscópio dividindo o valor
+            // Subtraímos 45 do beta porque o tablet normalmente é segurado inclinado, e não 100% reto
+            let xAxis = e.gamma / 3; 
+            let yAxis = (e.beta - 45) / 3; 
+
+            // Limita a rotação máxima para não "quebrar" o visual se o usuário virar o tablet de cabeça para baixo
+            xAxis = Math.max(-15, Math.min(15, xAxis));
+            yAxis = Math.max(-15, Math.min(15, yAxis));
+
+            aplicarEfeito3D(xAxis, yAxis);
+        });
+
+        // Função central que aplica o CSS na lente e no fundo
+        function aplicarEfeito3D(xAxis, yAxis) {
+            const stage = document.querySelector('.simulator-stage');
+            // Rotaciona a lente no eixo 3D
+            stage.style.transform = `perspective(1000px) rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+            
+            // Move o fundo (borrado) na direção oposta para criar profundidade
+            const bg = document.getElementById('full-bg-container');
+            bg.style.transform = `scale(1.15) translate(${-xAxis * 2}px, ${-yAxis * 2}px)`;
+        }
+        
         window.onload = loadDataFromSheets;
     </script>
 </body>
